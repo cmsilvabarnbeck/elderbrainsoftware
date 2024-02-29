@@ -3,6 +3,7 @@ package com.elderbrainsoftware.controller;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,9 +13,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.elderbrainsoftware.models.User;
+import com.elderbrainsoftware.repository.UserRepository;
 
 @RestController
 public class UserController {
+	
+	@Autowired
+	UserRepository userRepository;
+	
+	@GetMapping("/users")
+	public List<User> getAllUsers() {
+		List<User> users = new ArrayList<>();
+
+		User user1 = new User(1,"Chris","Barnbeck","test@gmail.com","password");
+		User user2 = new User(2,"Sam","Barnbeck","test@gmail.com","password");
+		users.add(user1);
+		users.add(user2);
+
+		return users;
+	}
 	
 	@GetMapping("/users/{userId}")
 	public User getUserById(@PathVariable("userId") Integer id) {
@@ -32,8 +49,9 @@ public class UserController {
 		newUser.setPassword(user.getPassword());
 		newUser.setId(user.getId());
 		
+		User savedUser = userRepository.save(newUser);
 		
-		return newUser;
+		return savedUser;
 	}
 	
 	@PutMapping("/users")
